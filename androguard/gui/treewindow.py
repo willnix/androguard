@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 
 from androguard.gui.helpers import Signature
 from androguard.gui.xrefwindow import XrefDialogClass
+from androguard.gui.cfgwindow import CfgWindow
 
 import logging
 log = logging.getLogger("androguard.gui")
@@ -89,6 +90,11 @@ class TreeWindow(QtWidgets.QTreeWidget):
             self,
             statusTip="List the references where this element is used",
             triggered=self.actionXref)
+        self.cfgAct = QtWidgets.QAction(
+            "CFG",
+            self,
+            statusTip="Show this elements code flow graph",
+            triggered=self.actionCfg)
         self.expandAct = QtWidgets.QAction("Expand",
                                            self,
                                            statusTip="Expand all the subtrees",
@@ -124,6 +130,36 @@ class TreeWindow(QtWidgets.QTreeWidget):
                                class_analysis=class_analysis)
         xwin.show()
 
+    def actionCfg(self):
+        item = self.currentItem()
+        if item.childCount() != 0:
+            self.mainwin.showStatus("Cfg not available")
+            return
+
+        current_class, _, _ = self._reverse_cache[item]
+
+        current_analysis = self.session.get_analysis(current_class)
+        if not current_analysis:
+            self.mainwin.showStatus("No cfg /bc no analysis object available.")
+            return
+
+        class_analysis = current_analysis.get_class_analysis(
+            current_class.get_name())
+        if not class_analysis:
+            self.mainwin.showStatus(
+                "No cfg /bc no class_analysis object available.")
+            return
+
+        cfgwin = CfgWindow(win=self.mainwin,
+                            current_class=current_class,
+                            class_analysis=class_analysis)
+        self.mainwin.central.addTab(cfgwin, cfgwin.title)
+        self.mainwin.central.setTabToolTip(self.mainwin.central.indexOf(cfgwin),
+                                   cfgwin.title)
+        self.mainwin.central.setCurrentWidget(cfgwin)
+        cfgwin.show()
+
+
     def expand_children(self, item):
         self.expandItem(item)
         for i in range(item.childCount()):
@@ -143,6 +179,7 @@ class TreeWindow(QtWidgets.QTreeWidget):
     def contextMenuEvent(self, event):
         menu = QtWidgets.QMenu(self)
         menu.addAction(self.xrefAct)
+        menu.addAction(self.cfgAct)
         menu.addAction(self.expandAct)
         menu.addAction(self.collapseAct)
         menu.exec_(event.globalPos())
