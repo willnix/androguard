@@ -316,7 +316,7 @@ def method2dot(mx, colors=None):
                 exception_block = exception_elem[-1]
                 if exception_block:
                     exception_id = hashlib.md5(
-                        bytearray(sha256 + exception_block.get_name(), "UTF-8")).hexdigest()
+                        bytearray(sha256 + str(exception_block.get_name()), "UTF-8")).hexdigest()
                     edges_html += "struct_{}:tail -> struct_{}:header  [color=\"{}\", label=\"{}\"];\n".format(
                         block_id, exception_id, "black", exception_elem[0])
 
@@ -325,10 +325,10 @@ def method2dot(mx, colors=None):
         DVMBasicMethodBlockChild = mx.basic_blocks.get_basic_block(link[2])
 
         if DVMBasicMethodBlockChild:
-            block_id = hashlib.md5(bytearray(sha256 + DVMBasicMethodBlock.get_name(
-            ), "UTF-8")).hexdigest()
-            child_id = hashlib.md5(bytearray(sha256 + DVMBasicMethodBlockChild.get_name(
-            ), "UTF-8")).hexdigest()
+            block_id = hashlib.md5(bytearray(sha256 + str(DVMBasicMethodBlock.get_name(
+            )), "UTF-8")).hexdigest()
+            child_id = hashlib.md5(bytearray(sha256 + str(DVMBasicMethodBlockChild.get_name(
+            )), "UTF-8")).hexdigest()
 
             edges_html += "struct_{}:tail -> struct_{}:header  [color=\"{}\", label=\"data(0x{:x}) to @0x{:x}\", style=\"dashed\"];\n".format(
                 block_id, child_id, "yellow", link[1], link[2])
