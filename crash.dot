@@ -1,0 +1,15 @@
+digraph G {
+graph [rankdir=TB];
+node [shape=plaintext];
+subgraph cluster_2acecc3c9717a15db23f9aa18111ce90 {
+label="test"
+struct_g [label=<
+<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+<TR><TD PORT="header"></TD></TR>
+<TR><TD ALIGN="LEFT" BGCOLOR="lightgray"> <FONT FACE="Times-Bold" color="blue">c</FONT> </TD><TD ALIGN="LEFT" BGCOLOR="lightgray"> <FONT FACE="Times-Bold" color="black">const-string </FONT> <FONT color="#999933">v0</FONT>, <FONT color="red">https://</FONT> </TD></TR>
+<TR><TD PORT="tail"></TD></TR>
+</TABLE>>];
+}
+
+struct_g:tail -> struct_g:header  [color="blue", label=""];
+}

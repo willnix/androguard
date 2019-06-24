@@ -1,5 +1,5 @@
 import hashlib
-from xml.sax.saxutils import escape
+from xml.sax.saxutils import escape as xmlescape
 from struct import unpack, pack
 import textwrap
 
@@ -9,6 +9,9 @@ import logging
 
 log = logging.getLogger("androguard.bytecode")
 
+def escape(s):
+    return '"%s"' % xmlescape(s)
+    #return xmlescape(s)
 
 def disable_print_colors():
     colors = save_colors()
@@ -252,6 +255,8 @@ def method2dot(mx, colors=None):
                                   DVMBasicMethodBlockInstruction.get_ref_off() * 2 + ins_idx))
 
             operands = DVMBasicMethodBlockInstruction.get_operands(ins_idx)
+            # BUG: escape function has to account for dot language comments // and /*
+            # wrap operand in double quotes should work
             output = ", ".join(mx.get_vm().get_operand_html(
                 i, registers, colors, escape, textwrap.wrap) for i in operands)
 

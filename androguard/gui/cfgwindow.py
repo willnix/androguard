@@ -64,6 +64,7 @@ class CfgWindow(QtWidgets.QWidget):
             buff_dot = method2dot(mx)
             # unpack the returned graph list because we expect a single graph
             (graph,) = self.create_graph(buff_dot, str(m.get_name()))
+            graph.write("crash.dot",format='raw')
             # render svg
             svg = graph.create_svg()
             svgs.append(svg)
